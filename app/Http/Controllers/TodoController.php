@@ -26,7 +26,7 @@ class TodoController extends Controller
     public function store(Request $request)
     {
         return [
-          // 'req' => $request
+          'req' => $request->title,
           'done'=> true
         ];
     }

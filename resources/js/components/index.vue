@@ -6,12 +6,12 @@
         <b-card-text class="my-2">
           <div class="my-4 text-right">
             <b-button
-              @click="showForm = !showForm"
               variant="primary"
               v-text="startCase('add new')"
+              v-b-modal.add-todo
             ></b-button>
           </div>
-          <Form v-if="showForm" />
+          <Form modalType="add-todo" />
         </b-card-text>
         <b-card-text class="my-2">
           <List v-if="!isEmpty(items)" :items="items" />
@@ -45,13 +45,6 @@ export default {
     axios.get("/api/todos").then(res => {
       this.items = res.data;
     });
-    axios
-      .post("/api/todos", {
-        title: "bypassing initiatives",
-      })
-      .then(res => {
-        console.log(res.data);
-      });
   },
 };
 </script>

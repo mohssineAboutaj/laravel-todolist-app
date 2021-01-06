@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <b-modal :id="modalType" hide-footer :title="startCase(modalType)">
     <b-form @submit="onSubmit" @reset="onReset">
       <b-form-group
         id="input-group-1"
@@ -16,16 +16,36 @@
         ></b-form-input>
       </b-form-group>
 
-      <b-button type="submit" variant="primary">Submit</b-button>
-      <b-button type="reset" variant="danger">Reset</b-button>
+      <b-form-group class="text-right">
+        <b-button type="submit" variant="primary">Submit</b-button>
+        <b-button type="reset" variant="danger">Reset</b-button>
+      </b-form-group>
     </b-form>
-  </div>
+  </b-modal>
 </template>
 
 <script>
-import { startCase } from "lodash";
+import { startCase, isEmpty } from "lodash";
 
 export default {
+  props: {
+    modalType: {
+      type: String,
+      required: true,
+    },
+    todo: {
+      type: Object,
+      required: false,
+      default: {},
+    },
+  },
+  created() {
+    this.title = null;
+
+    if (!isEmpty(this.todo)) {
+      this.title = this.todo.title;
+    }
+  },
   data: () => ({
     title: "",
   }),
@@ -33,17 +53,18 @@ export default {
     startCase: c => startCase(c),
     onSubmit(event) {
       event.preventDefault();
-      console.log(this.title);
+      axios
+        .post("/api/todos", {
+          title: this.title,
+        })
+        .then(res => {
+          console.log(res);
+        });
     },
     onReset(event) {
       event.preventDefault();
       // Reset our form values
       this.title = null;
-      // Trick to reset/clear native browser form validation state
-      // this.show = false;
-      // this.$nextTick(() => {
-      //   this.show = true;
-      // });
     },
   },
 };
